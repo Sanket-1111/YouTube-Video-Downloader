@@ -1,0 +1,63 @@
+from tkinter import *
+from tkinter import filedialog
+from pytube import YouTube
+from moviepy.editor import *
+import shutil
+
+root = Tk()
+root.title('Video Downloder')
+
+def get_path():
+    path = filedialog.askdirectory()
+    path_label.config(text=path)
+
+def download():
+    video_path = url_entry.get()
+    file_path = path_label.cget("text")
+    print("Downloading . . . ")
+    mp4 = YouTube(video_path).streams.get_highest_resolution().download()
+    video_clip = VideoFileClip(mp4)
+    video_clip.close()
+    shutil.move(mp4, file_path)
+    print(" Download Complete")
+
+def download_mp3():
+    video_path = url_entry.get()
+    file_path = path_label.cget("text")
+    print("Downloading . . . ")
+    mp4 = YouTube(video_path).streams.get_highest_resolution().download()
+    print(mp4)
+    audio_clip = VideoFileClip(mp4)
+    audio_file = audio_clip.audio
+    audio_file.write_audiofile('mp4.mp3')
+    audio_file.close()
+    shutil.move('mp4.mp3', file_path)
+    print(" Download Complete")
+
+
+
+
+
+canvas = Canvas(root, width=400, height=500)
+canvas.pack()
+
+label = Label(root, text="Video Downloder", fg="green", font=('Arial',20))
+canvas.create_window(200, 30, window=label)
+
+url_label = Label(root, text="Enter video URL",  font=('Arial',12))
+url_entry = Entry(root)
+
+canvas.create_window(200, 80, window=url_label)
+canvas.create_window(200, 100, window=url_entry)
+
+path_label = Label(root, text="Select path to download",  font=('Arial',12))
+canvas.create_window(200, 150, window=path_label)
+path_button = Button(root, text="Select",  font=('Arial',10), command=get_path)
+canvas.create_window(200, 190, window=path_button)
+
+download_button = Button(root, text="Download",  font=('Arial',12), command=download)
+canvas.create_window(120, 410, window=download_button)
+
+download_mp3 = Button(root, text="Download mp3",  font=('Arial',12), command=download_mp3)
+canvas.create_window(250, 410, window=download_mp3)
+root.mainloop()
